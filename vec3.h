@@ -12,39 +12,66 @@
 //==================================================================================================
 
 #include <iostream>
-#include <math.h>
+#include <cmath>
 #include <stdlib.h>
+#include "rtweekend.h"
 
 
 class vec3  {
     public:
-        vec3() {}
-        vec3(float e0, float e1, float e2) { e[0] = e0; e[1] = e1; e[2] = e2; }
-        inline float x() const { return e[0]; }
-        inline float y() const { return e[1]; }
-        inline float z() const { return e[2]; }
-        inline float r() const { return e[0]; }
-        inline float g() const { return e[1]; }
-        inline float b() const { return e[2]; }
+        vec3() : e{0,0,0} {} //initialize to 0 if nothing passed in
+        vec3(float e0, float e1, float e2) : e{e0,e1,e2} {} //concstructor to set values to inputs
 
-        inline const vec3& operator+() const { return *this; }
-        inline vec3 operator-() const { return vec3(-e[0], -e[1], -e[2]); }
-        inline float operator[](int i) const { return e[i]; }
-        inline float& operator[](int i) { return e[i]; }
+        float x() const { return e[0]; }
+        float y() const { return e[1]; }
+        float z() const { return e[2]; }
 
-        inline vec3& operator+=(const vec3 &v2);
-        inline vec3& operator-=(const vec3 &v2);
-        inline vec3& operator*=(const vec3 &v2);
-        inline vec3& operator/=(const vec3 &v2);
-        inline vec3& operator*=(const float t);
-        inline vec3& operator/=(const float t);
+        float r() const { return e[0]; }
+        float g() const { return e[1]; }
+        float b() const { return e[2]; }
 
-        inline float length() const { return sqrt(e[0]*e[0] + e[1]*e[1] + e[2]*e[2]); }
-        inline float squared_length() const { return e[0]*e[0] + e[1]*e[1] + e[2]*e[2]; }
-        inline void make_unit_vector();
+        const vec3& operator+() const { return *this; }
+        vec3 operator-() const { return vec3(-e[0], -e[1], -e[2]); }
+        float operator[](int i) const { return e[i]; }
+        float& operator[](int i) { return e[i]; }
 
+        vec3& operator+=(const vec3 &v2);
+        vec3& operator-=(const vec3 &v2);
+        vec3& operator*=(const vec3 &v2);
+        vec3& operator/=(const vec3 &v2);
+        vec3& operator*=(const float t);
+        vec3& operator/=(const float t);
+
+        float length() const 
+        { 
+            return sqrt(squared_length()); 
+        }
+
+        float squared_length() const 
+        { 
+            return e[0]*e[0] + e[1]*e[1] + e[2]*e[2]; 
+        }
+
+        void make_unit_vector();
+
+        vec3 random_in_unit_sphere();
+
+        inline static vec3 random()
+        {
+            return vec3(random_double(), random_double(), random_double());
+        }
+
+        inline static vec3 random(double min, double max)
+        {
+            return vec3(random_double(min, max), random_double(min, max), random_double(min, max));
+        }
+
+    public:
         float e[3];
 };
+
+using point3 = vec3; // 3D point
+using color = vec3; // RGB color
 
 
 inline std::istream& operator>>(std::istream &is, vec3 &t) {
@@ -150,5 +177,22 @@ inline vec3 unit_vector(vec3 v) {
     return v / v.length();
 }
 
+vec3 random_in_unit_sphere()
+{
+    while(true)
+    {
+        auto p = vec3::random(-1, 1);
+        if(p.squared_length() >= 1)
+        {
+            continue;
+        }
+        return p;
+    }
+}
+
+vec3 random_unit_vector()
+{
+    return unit_vector(random_in_unit_sphere());
+}
 
 #endif
