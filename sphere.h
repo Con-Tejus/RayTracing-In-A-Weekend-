@@ -18,7 +18,7 @@ class sphere : public hittable
         shared_ptr<material> mat_ptr;
 };
 
-// specify sphere::hit because this it the derived class implementation of hit from the base class hittable
+// specify sphere::hit because this is the derived class implementation of hit from the base class hittable
 bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) const
 {
     //center can be called directly here because it is public
